@@ -58,19 +58,24 @@ def getRequest(url:str, cookies):
         logging.error(f"ERROR: ({response.status_code}) - {response.text}")
         return None
 
-def api_login(version:str, portal:str, username:str, password:str):
+def api_login(version:str, portal:str, username:str, password:str, tenant=None):
     global REQUESTDATA
     domain = "https://" + portal + ".contactfy.cloud:8887"
-    payload = {
-        "username": username,
-        "password": password
-    }
-    print(version)
+    if tenant is not None:
+        payload = {
+            "username": username,
+            "password": password,
+            "domain": tenant
+        }
+    else:
+        payload = {
+            "username": username,
+            "password": password
+        }
     if version == 'v16':
         url = domain + "/api/login"
     elif version == 'v22':
         url = domain + "/api/auth/sign_in"
-    print(url, payload)
     response = postRequest(url, {'Content-Type': 'application/json'}, json.dumps(payload, indent=4, ensure_ascii=False))
     if response is None or (response.status_code != 200 and response.status_code != 201):
         return "Sem resposta da API"
