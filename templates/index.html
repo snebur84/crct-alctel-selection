@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="loader" class="loader"></div>
+    <form action="/" method="POST">
+        <input type="text" name="user" id="user" placeholder="Usuário" required>
+        <input type="password" name="password" id="password" placeholder="Senha" required>
+        <select name="portal" id="portal">
+            <option value="portal1">Portal 01</option>
+            <option value="portal2">Portal 02</option>
+            <option value="portal3">Portal 03</option>
+            <option value="portal4">Portal 04</option>
+            <option value="portal5">Portal 05</option>
+            <option value="portal6">Portal 06</option>
+            <option value="portal7">Portal 07</option>
+            <option value="portal8">Portal 08</option>
+            <option value="portal9">Portal 09</option>
+        </select>
+        <div>
+            <label for="version"><input type="checkbox" name="version" id="version" value="v16"><span>v16</span></label>
+            <label for="version"><input type="checkbox" name="version" id="version" value="v22"><span>v22</span></label>
+        </div>
+        <button id="btn_start" class="start_counter" type="submit">Logar</button>
+    </form>
+    <div id="counter">
+        <p>{{ dados }}</p>
+    </div>
+{% endblock %}
