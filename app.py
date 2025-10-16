@@ -34,7 +34,6 @@
 from flask import Flask, jsonify, render_template, redirect, url_for, request
 import json
 import requests
-import logging
 from datetime import datetime
 from requests.packages.urllib3.exceptions import InsecureRequestWarning # type: ignore
 
@@ -55,7 +54,7 @@ def getRequest(url:str, cookies):
     if response.status_code == 200:
         return response
     else:
-        logging.error(f"ERROR: ({response.status_code}) - {response.text}")
+        print(f"ERROR: ({response.status_code}) - {response.text}")
         return None
 
 def api_login(version:str, portal:str, username:str, password:str, tenant=None):
@@ -82,6 +81,7 @@ def api_login(version:str, portal:str, username:str, password:str, tenant=None):
     else:
         if "access_token" in response.text:
             REQUESTDATA = response.json()
+            REQUESTDATA['domain'] = domain
             return "Login v22 OK"
         else:
             cookies = response.cookies
@@ -92,9 +92,31 @@ def api_login(version:str, portal:str, username:str, password:str, tenant=None):
                 return "Sem resposta de consulta"
             try:
                 REQUESTDATA = response.json()
+                REQUESTDATA['domain'] = domain
             except json.JSONDecodeError as e:
                 return
             return  "Login v16 OK"
+        
+@app.route('/tenants', methods=['GET'])
+def tenants():
+    global REQUESTDATA
+    if 'access_token' in REQUESTDATA:
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f"Bearer {REQUESTDATA['access_token']}"
+        }
+        url = f"{REQUESTDATA['domain']}/api/tenants"
+        response = requests.get(url, headers=headers, verify=False)
+        if response.status_code == 200:
+            data = response.json()
+            tenants = data.get('items')
+            return render_template('tenants.html', tenants=tenants)
+        else:
+            print(f"ERROR: ({response.status_code}) - {response.text}")
+            return jsonify({"error": "Failed to fetch tenants"}), response.status_code
+    else:
+        return jsonify({"error": "No access token found"}), 401
+
 
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -103,17 +125,10 @@ def index():
         password = request.form['password']
         portal = request.form['portal']
         version = request.form['version']
-        api_login(version, portal, user, password)
+        answer = api_login(version, portal, user, password)
+        print(answer)
         return render_template('selecao.html', user=user, portal=portal, version=version)
     return render_template('index.html')
 
 if __name__ == '__main__':
-    timestamp = datetime.now().strftime('%Y-%m-%d')
-    log_filename = f'log_ramal_{timestamp}.log'
-    logging.basicConfig(
-    filename=log_filename,  
-    level=logging.INFO,  
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filemode="a"
-    )
     app.run(host='0.0.0.0', port=6543)
