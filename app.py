@@ -60,7 +60,7 @@ def getRequest(url:str, cookies):
 def api_login(version:str, portal:str, username:str, password:str, tenant=None):
     global REQUESTDATA
     domain = "https://" + portal + ".contactfy.cloud:8887"
-    if tenant is not None:
+    if tenant:
         payload = {
             "username": username,
             "password": password,
@@ -77,7 +77,7 @@ def api_login(version:str, portal:str, username:str, password:str, tenant=None):
         url = domain + "/api/auth/sign_in"
     response = postRequest(url, {'Content-Type': 'application/json'}, json.dumps(payload, indent=4, ensure_ascii=False))
     if response is None or (response.status_code != 200 and response.status_code != 201):
-        return "Sem resposta da API"
+        return jsonify({"error": response})
     else:
         if "access_token" in response.text:
             REQUESTDATA = response.json()
@@ -96,6 +96,10 @@ def api_login(version:str, portal:str, username:str, password:str, tenant=None):
             except json.JSONDecodeError as e:
                 return
             return  "Login v16 OK"
+        
+@app.route('/ramais', methods=['GET','POST'])
+def ramais():
+    return render_template('ramais.html')
         
 @app.route('/tenants', methods=['GET'])
 def tenants():
@@ -125,9 +129,13 @@ def index():
         password = request.form['password']
         portal = request.form['portal']
         version = request.form['version']
-        answer = api_login(version, portal, user, password)
+        try:
+            tenant = request.form['tenant']
+        except:
+            tenant = None
+        answer = api_login(version, portal, user, password, tenant)
         print(answer)
-        return render_template('selecao.html', user=user, portal=portal, version=version)
+        return render_template('selecao.html', user=user, portal=portal, version=version, tenant=tenant)
     return render_template('index.html')
 
 if __name__ == '__main__':

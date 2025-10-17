@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form method="post" action="#" enctype="multipart/form-data">
+
+      <!-- Opções principais -->
+      <fieldset>
+        <legend>Modo de criação</legend>
+        <label>
+          <input type="radio" name="modo_criacao" id="criar_ramal" value="criar_ramal" checked>
+          Criar Ramal
+        </label>
+        <label>
+          <input type="radio" name="modo_criacao" id="criar_range" value="criar_range">
+          Criar Range
+        </label>
+        <label>
+          <input type="radio" name="modo_criacao" id="importar_xlsx" value="importar_xlsx">
+          Importar XLSX
+        </label>
+      </fieldset>
+
+      <!-- === FORMULÁRIO CRIAR RAMAL === -->
+      <div id="form_criar_ramal">
+        <div>
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" name="nome">
+        </div>
+
+        <div>
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha">
+        </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+
+        <div>
+          <label for="display_name">Display name</label>
+          <input type="text" id="display_name" name="display_name">
+        </div>
+
+        <div>
+          <label for="ramal">Ramal</label>
+          <input type="text" id="ramal" name="ramal">
+        </div>
+
+        <fieldset>
+          <legend>Ativar gravação</legend>
+          <label>
+            <input type="radio" id="gravacao_sim" name="ativar_gravacao" value="sim">
+            Sim
+          </label>
+          <label>
+            <input type="radio" id="gravacao_nao" name="ativar_gravacao" value="nao">
+            Não
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Repetir senha para ramal</legend>
+          <label>
+            <input type="radio" id="repetir_sim" name="repetir_senha_para_ramal" value="sim">
+            Sim
+          </label>
+          <label>
+            <input type="radio" id="repetir_nao" name="repetir_senha_para_ramal" value="nao">
+            Não
+          </label>
+        </fieldset>
+
+        <div id="senha_ramal_container" style="display: none;">
+          <label for="senha_ramal">Senha do Ramal</label>
+          <input type="password" id="senha_ramal" name="senha_ramal">
+        </div>
+      </div>
+
+      <!-- === FORMULÁRIO CRIAR RANGE === -->
+      <div id="form_criar_range" style="display: none;">
+        <div>
+          <label for="numero_inicial">Número inicial</label>
+          <input type="text" id="numero_inicial" name="numero_inicial">
+        </div>
+
+        <div>
+          <label for="numero_final">Número final</label>
+          <input type="text" id="numero_final" name="numero_final">
+        </div>
+
+        <div>
+          <label>
+            <input type="checkbox" id="criar_senha_auto" name="criar_senha_auto">
+            Criar senha automaticamente
+          </label>
+        </div>
+
+        <div>
+          <label>
+            <input type="checkbox" id="usar_dominio_email" name="usar_dominio_email">
+            Usar domínio para email
+          </label>
+        </div>
+      </div>
+
+      <!-- === FORMULÁRIO IMPORTAR XLSX === -->
+      <div id="form_importar_xlsx" style="display: none;">
+        <div>
+          <label for="arquivo_xlsx">Importar arquivo XLSX</label>
+          <input type="file" id="arquivo_xlsx" name="arquivo_xlsx" accept=".xlsx">
+        </div>
+      </div>
+
+      <div>
+        <button type="submit">Enviar</button>
+      </div>
+    </form>
+
+    <script>
+      const modoCriarRamal = document.getElementById('criar_ramal');
+      const modoCriarRange = document.getElementById('criar_range');
+      const modoImportar = document.getElementById('importar_xlsx');
+
+      const formCriarRamal = document.getElementById('form_criar_ramal');
+      const formCriarRange = document.getElementById('form_criar_range');
+      const formImportar = document.getElementById('form_importar_xlsx');
+
+      const repetirSim = document.getElementById('repetir_sim');
+      const repetirNao = document.getElementById('repetir_nao');
+      const senhaRamalContainer = document.getElementById('senha_ramal_container');
+
+      // Alternar visibilidade de senha do ramal
+      repetirSim.addEventListener('change', () => {
+        senhaRamalContainer.style.display = 'none';
+      });
+      repetirNao.addEventListener('change', () => {
+        senhaRamalContainer.style.display = 'block';
+      });
+
+      // Alternar entre os modos principais
+      const atualizarModo = () => {
+        if (modoCriarRamal.checked) {
+          formCriarRamal.style.display = 'block';
+          formCriarRange.style.display = 'none';
+          formImportar.style.display = 'none';
+        } else if (modoCriarRange.checked) {
+          formCriarRamal.style.display = 'none';
+          formCriarRange.style.display = 'block';
+          formImportar.style.display = 'none';
+        } else if (modoImportar.checked) {
+          formCriarRamal.style.display = 'none';
+          formCriarRange.style.display = 'none';
+          formImportar.style.display = 'block';
+        }
+      };
+
+      modoCriarRamal.addEventListener('change', atualizarModo);
+      modoCriarRange.addEventListener('change', atualizarModo);
+      modoImportar.addEventListener('change', atualizarModo);
+    </script>
+
+{% endblock %}

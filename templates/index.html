@@ -2,8 +2,12 @@
 {% block content %}
     <div id="loader" class="loader"></div>
     <form action="/" method="POST">
+        <label for="user">Usuário</label>
         <input type="text" name="user" id="user" placeholder="Usuário" required>
+        <label for="password">Senha</label>
         <input type="password" name="password" id="password" placeholder="Senha" required>
+        <label for="tenant">Tenant</label>
+        <input type="text" name="tenant" id="tenant" placeholder="Tenant (opcional)">
         <select name="portal" id="portal">
             <option value="portal1">Portal 01</option>
             <option value="portal2">Portal 02</option>
@@ -16,8 +20,14 @@
             <option value="portal9">Portal 09</option>
         </select>
         <div>
-            <label for="version"><input type="checkbox" name="version" id="version" value="v16"><span>v16</span></label>
-            <label for="version"><input type="checkbox" name="version" id="version" value="v22"><span>v22</span></label>
+        <label for="v16">
+            <input type="radio" name="version" id="v16" value="v16">
+            <span>v16</span>
+        </label>
+        <label for="v22">
+            <input type="radio" name="version" id="v22" value="v22">
+            <span>v22</span>
+        </label>
         </div>
         <button id="btn_start" class="start_counter" type="submit">Logar</button>
     </form>

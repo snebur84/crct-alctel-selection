@@ -2,10 +2,12 @@
 {% block content %}
     <section>
         <h2>Selecione a ação</h2>
-        <div><p>Logado como: {{ user }} - {{ portal }} - {{ version }}</p></div>
-        <div><a href="/tenants">Listar Tenants</a></div>
-        <div><a href=""></a>Logar Tenant</div>
-        <div><a href=""></a>Criar Ramais</div>
+        <div><p>Logado como: {{ user }} - {{ portal }} - {{ version }} - {{ tenant }}</p></div>
+
+        {% if not tenant %}
+            <div><a href="/tenants">Listar Tenants</a></div>
+        {% endif %}
+        <div><a href="/ramais">Criar Ramais</a></div>
         <div><a href=""></a></div>
     </section>
 {% endblock %}
